@@ -1,7 +1,7 @@
 pragma solidity ^0.8.13;
 // SPDX-License-Identifier: UNLICENSED 
 
-
+//USE IT AT YOUR OWN RISK. NOT COMPLETE NOR TESTED YET!!
 
 
 interface IERC20 {
