@@ -1,4 +1,4 @@
-pragma solidity ^0.8.11;
+pragma solidity ^0.8.13;
 // SPDX-License-Identifier: UNLICENSED
 
 
@@ -145,6 +145,10 @@ contract teamLocker{
         else{
             return unlocktime - block.timestamp;
         }
+    }
+
+    function increaseLockByDays(uint256 amount) external onlyClaimers {
+        _locked[_activeTokenAddress] += 86400*amount;
     }
 
     function unlock() external {
