@@ -148,7 +148,7 @@ contract teamLocker{
     }
 
     function increaseLockByDays(uint256 amount) external onlyClaimers {
-        _locked[_activeTokenAddress] += 86400*amount;
+        unlocktime += 86400*amount;
     }
 
     function unlock() external {
