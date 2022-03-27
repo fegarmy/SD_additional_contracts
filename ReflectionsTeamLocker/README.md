@@ -9,6 +9,8 @@
 # Explaining the Writte function
 ## addCalimer
 ## addTeamTokens
+**Requirement**: Approval of the token
+Keeps reflections and is adding some more tokens to the locked section.This will take some more tokens from your wallet.
 ## getReflections
 ## increaseLockByDays
 ## removeClaimer
