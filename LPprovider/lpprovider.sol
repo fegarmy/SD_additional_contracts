@@ -1,7 +1,7 @@
 pragma solidity ^0.8.13;
 // SPDX-License-Identifier: UNLICENSED 
 
-//USE IT AT YOUR OWN RISK. NOT COMPLETE NOR TESTED YET!!
+//Contract has not been tested. Use at your own risk!
 
 
 interface IERC20 {
@@ -75,6 +75,26 @@ interface IERC20 {
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
+library TransferHelper {
+    
+    function safeTransferFrom(address token, address from, address to, uint256 value) internal {
+        (bool success, bytes memory data) = token.call(abi.encodeWithSelector(0x23b872dd, from, to, value));
+        require(success && (data.length == 0 || abi.decode(data, (bool))), 'TransferHelper: TRANSFER_FROM_FAILED');
+    }
+
+    function safeTransferETH(address to, uint256 value) internal {
+        (bool success,) = to.call{value:value}(new bytes(0));
+        require(success, 'TransferHelper: ETH_TRANSFER_FAILED');
+    }
+}
+
+
+interface wrap {
+    function deposit() external payable;
+    function withdraw(uint256 amt) external;
+    function transfer(address recipient, uint256 amount) external returns (bool);
+}
+
 interface SmartDefi{
     function  _totalSupply1() external returns(uint256);
     function  _totalSupply2() external returns(uint256);
@@ -82,7 +102,7 @@ interface SmartDefi{
     function  _totalSupply8() external returns(uint256);
 }
 
-contract LPprovider{
+contract LPproviderSmartDefi{
     uint256 private _unlock; 
     bool  private _rentrenceLock = true;
     mapping (address => bool) private _allowed;
@@ -120,6 +140,39 @@ contract LPprovider{
         _floor[token] = IERC20(token).balanceOf(address(this));
     }
 
+    function increaseExactLiquidity() external onlyallowed{
+        require(IERC20(fbnb).balanceOf(address(this)) - _floor[fbnb] > 5*10**7,"Not enough to refund your gas fees");
+        //refund the gas fees
+        uint256 amt = 5*10**7;
+        wrap(fbnb).withdraw(amt);
+        //send the refund
+        TransferHelper.safeTransferETH(msg.sender, address(this).balance);
+        //get new balances
+        uint256 rate = 10**9 * getTokenBalance() / getMainBalance();
+        uint256 tokens = IERC20(token).balanceOf(address(this)) - _floor[token];
+        uint256 main = IERC20(fbnb).balanceOf(address(this)) - _floor[fbnb];
+        uint256 tokenstosend = 0;
+        uint256 maintosend = 0;
+        if (rate* main / 10**9 < tokens){
+            //send  rate*main/10**9 tokens and send all of main
+            tokenstosend = rate* main / 10**9;
+            maintosend = main;
+        }
+        else{
+            //send all of tokens and token/(rate/10**9)
+            maintosend = tokens/(rate/10**9);
+            tokenstosend = tokens; 
+
+        }
+            amt = maintosend;
+            bool xfer = IERC20(fbnb).transfer(token, amt);
+            require(xfer, "ERR_ERC20_FALSE");
+            amt = tokenstosend;
+            xfer = IERC20(token).transfer(msg.sender, amt);
+            require(xfer, "ERR_ERC20_FALSE");
+            
+
+    }
 
     function getTokenBalance() internal returns(uint256) {
         return IERC20(token).balanceOf(address(this)) - SmartDefi(token)._totalSupply1();  
