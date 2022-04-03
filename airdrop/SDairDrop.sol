@@ -220,8 +220,8 @@ contract claimableAirdrop is Ownable,ReentrancyGuard {
                 continue;
             }
             _isParticipant[_addresses[i]] = true;
+            remainingPersonsToClaim += 1;
         }
-        remainingPersonsToClaim += _addresses.length;
     }
     function claimAirdrop(address user)   external nonReentrant{
         require(open,"Airdrop is not yet open");
