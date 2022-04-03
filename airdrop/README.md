@@ -8,7 +8,8 @@
 * ❓ see if is a participant (NO) => register multi only one => see if is participant (true)
 * ❓ send token to presale => getLeftOver =>  LeftOverAvaillable (0)
 * ❓ Rentrecy guard if trying to claimAirdrop (should fail)
-* ❓ Get reflections
+* ❓ Get reflections during Airdrop
+* ❓ Get reflections after Airdrop
 * ❓ Checks if can change address if people are in presale (should fail)
 * ❓ Checks if can change address if people are in presale and time passed (should pass)
 * ❓ Checks if can double claim airdrop (should fail)
