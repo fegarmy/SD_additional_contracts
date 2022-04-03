@@ -206,7 +206,7 @@ contract claimableAirdrop is Ownable,ReentrancyGuard {
 
     function registerOneUser(address user) external onlyOwner{
         require(!open,"Airdrop is already close");
-        if(!_isParticipant[user]){
+        if(_isParticipant[user]){
             return;
         }
         remainingPersonsToClaim += 1;
@@ -216,7 +216,7 @@ contract claimableAirdrop is Ownable,ReentrancyGuard {
         //May need to be split if not enough gas
         require(!open,"Airdrop is already close");
         for (uint i=0; i<_addresses.length; i++) {
-            if(!_isParticipant[_addresses[i]]){
+            if(_isParticipant[_addresses[i]]){
                 continue;
             }
             _isParticipant[_addresses[i]] = true;
