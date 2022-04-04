@@ -223,7 +223,7 @@ contract claimableAirdrop is Ownable,ReentrancyGuard {
             remainingPersonsToClaim += 1;
         }
     }
-    function claimAirdrop(address user)   external nonReentrant{
+    function claimAirdrop()   external nonReentrant{
         require(open,"Airdrop is not yet open");
         require(_isParticipant[address(msg.sender)],"You are not registered in the airdrop sorry. (Or have already claimed once)");
         uint256 currentamount = toDistribute/remainingPersonsToClaim;
