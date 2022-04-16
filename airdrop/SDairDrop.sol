@@ -233,6 +233,12 @@ contract claimableAirdrop is Ownable,ReentrancyGuard {
         remainingPersonsToClaim -= 1;
         toDistribute -= currentamount;
     }
+    function unregister(address tounregister) external onlyOwner{
+        require(!open,"Airdrop is already open");
+        require(remainingPersonsToClaim != 0,"You have added nobody in it");
+        remainingPersonsToClaim -= 1;
+        _isParticipant[tounregister] = false;
+    }
     function releaseAirdop() external onlyOwner{
         open = true;
         startTime = block.timestamp;
